@@ -1,0 +1,24 @@
+steps:
+  # Build image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb', '.']
+
+  # Push image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - cicd-labb-service
+      - --image
+      - us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb
+      - --region
+      - us-central1
+      - --platform
+      - managed
+      - --allow-unauthenticated
+      
