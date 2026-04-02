@@ -1,3 +1,7 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+
 steps:
   # Build image
   - name: 'gcr.io/cloud-builders/docker'
@@ -21,4 +25,3 @@ steps:
       - --platform
       - managed
       - --allow-unauthenticated
-      
