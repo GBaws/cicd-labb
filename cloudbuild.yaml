@@ -1,35 +1,17 @@
-options:
-  logging: CLOUD_LOGGING_ONLY
-
 steps:
-  # Step 1: Install dependencies & run tests
-  - name: 'python:3.10'
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        pip install -r requirements.txt
-        pytest
-
-  # Step 2: Build container
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb', '.']
+    args: [
+      'build',
+      '-t',
+      'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA',
+      '.'
+    ]
 
-  # Step 3: Push image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb']
+    args: [
+      'push',
+      'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'
+    ]
 
-  # Step 4: Deploy
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - run
-      - deploy
-      - cicd-labb-service
-      - --image
-      - us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb
-      - --region
-      - us-central1
-      - --platform
-      - managed
-      - --allow-unauthenticated
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'
