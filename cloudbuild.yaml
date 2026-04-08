@@ -3,18 +3,30 @@ options:
 
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t',
-      'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA',
-      '.'
-    ]
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'
+      - '.'
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'push',
-      'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'
-    ]
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'deploy'
+      - 'releases'
+      - 'create'
+      - 'release-$SHORT_SHA'
+      - '--delivery-pipeline'
+      - 'cicd-labb-pipeline'
+      - '--region'
+      - 'us-central1'
+      - '--images'
+      - 'cicd-labb=us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'
 
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/cicd-labb-repo/cicd-labb:$SHORT_SHA'

@@ -1,0 +1,15 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: cicd-labb
+
+manifests:
+  helm:
+    releases:
+      - name: app2
+        chartPath: app2
+        valuesFiles:
+          - app2/values.yaml
+
+deploy:
+  kubectl: {}

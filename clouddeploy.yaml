@@ -1,0 +1,17 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: cicd-labb-pipeline
+
+serialPipeline:
+  stages:
+    - targetId: gke-dev
+
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: gke-dev
+
+gke:
+  cluster: projects/gcp-bootcamp-labs/locations/us-central1-a/clusters/payments-cluster
